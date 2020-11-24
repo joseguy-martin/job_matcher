@@ -23,12 +23,12 @@ with open('input/job.txt', 'r') as j, open('input/resume.txt', 'r') as r:
     resume_text = r.read()
 
 # Initialize variables
-phrases_to_consider = []
 job_verbs = []
 job_chunks = []
 need_adding = []
 resume_verbs = []
 resume_chunks = []
+phrases_to_consider = []
 resume_doc = nlp(resume_text)
 
 # Read noun chunks and verbs from the job text
