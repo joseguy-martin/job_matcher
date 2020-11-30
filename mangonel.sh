@@ -1,6 +1,6 @@
 for x in 1 2
     do
-        # python3 lib/bulk_job_text.py
+        python3 lib/bulk_job_text.py
         python3 lib/common_lex.py
         python3 lib/mangonel.py
 
