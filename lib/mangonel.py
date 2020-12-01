@@ -1,6 +1,12 @@
-import spacy
-from os import remove
-from spacy.matcher import Matcher
+try:
+    import spacy
+    import docx2txt
+    from os import remove
+    import slate3k as slate
+    from spacy.matcher import Matcher
+except (ModuleNotFoundError, ImportError):
+    with open('temp/.install', 'w') as f:
+        quit()
 
 # Set of colors for command line display
 class bcolors:
@@ -17,10 +23,28 @@ class bcolors:
 # Load spacy's English model and read the input files
 nlp = spacy.load('en_core_web_sm')
 matcher = Matcher(nlp.vocab)
-with open('input/job.txt', 'r') as j, open('input/resume.txt', 'r') as r:
+with open('input/job.txt', 'r') as j:
     job_text = j.readlines()
     job_doc = nlp(j.read())
-    resume_text = r.read()
+
+# User input for resume file
+resume_file = input('Please enter filename for your resume:\n')
+resume_file_type = resume_file.split('.')[len(resume_file.split('.'))-1].lower()
+while True:
+    try:
+        with open(resume_file, 'r') as r:
+            if 'pdf' in resume_file_type:
+                resume_text = "\n".join(slate.PDF(r))
+                break
+            elif 'txt' in resume_file_type:
+                resume_text = r.read()
+                break
+            elif 'docx' in resume_file_type:
+                resume_text = docx2txt.process(r)
+            else:
+                print("Unsupported file type. Try again.")
+    except FileNotFoundError:
+        print('File not found. Try again.')
 
 # Initialize variables
 job_verbs = []
