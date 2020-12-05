@@ -1,8 +1,7 @@
 try:
     import spacy
-    import docx2txt
+    import textract
     from os import remove
-    import slate3k as slate
     from spacy.matcher import Matcher
 except (ModuleNotFoundError, ImportError):
     with open('temp/.install', 'w') as f:
@@ -28,21 +27,22 @@ with open('input/job.txt', 'r') as j:
     job_doc = nlp(j.read())
 
 # User input for resume file
-resume_file = input('Please enter filename for your resume:\n')
-resume_file_type = resume_file.split('.')[len(resume_file.split('.'))-1].lower()
 while True:
+    resume_file = input('Please enter filename for your resume:\n')
+    resume_file_type = resume_file.split('.')[len(resume_file.split('.'))-1].lower()
     try:
-        with open(resume_file, 'r') as r:
-            if 'pdf' in resume_file_type:
-                resume_text = "\n".join(slate.PDF(r))
-                break
-            elif 'txt' in resume_file_type:
+        if 'pdf' in resume_file_type:
+            resume_text = str(textract.process(resume_file, method='pdfminer'))
+            break
+        elif 'txt' in resume_file_type:
+            with open(resume_file, 'r') as r:
                 resume_text = r.read()
-                break
-            elif 'docx' in resume_file_type:
-                resume_text = docx2txt.process(r)
-            else:
-                print("Unsupported file type. Try again.")
+            break
+        elif 'docx' in resume_file_type:
+            resume_text = str(textract.process(resume_file))
+            break
+        else:
+            print("Unsupported file type. Try again.")
     except FileNotFoundError:
         print('File not found. Try again.')
 

@@ -1,4 +1,3 @@
 spacy==2.3.2
-docx2txt==0.8
-slate3k==0.5.3
+textract==1.6.3
 beautifulsoup4==4.9.3
