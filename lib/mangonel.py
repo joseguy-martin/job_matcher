@@ -2,7 +2,6 @@ try:
     import spacy
     import textract
     from os import remove
-    import slate3k as slate
     from spacy.matcher import Matcher
 except (ModuleNotFoundError, ImportError):
     with open('temp/.install', 'w') as f:
