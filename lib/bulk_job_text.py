@@ -1,9 +1,5 @@
-try:
-    import requests
-    from bs4 import BeautifulSoup
-except (ModuleNotFoundError, ImportError):
-    with open('.install', 'w') as f:
-        quit()
+import requests
+from bs4 import BeautifulSoup
 
 # Get the start page and gather the links to each job
 start_page = requests.get('https://www.indeed.com/jobs?q=analyst&l=New%20York%2C%20NY&vjk=747467bd98c63be2')
@@ -15,6 +11,6 @@ del start_page, start_page_soup
 with open('temp/all_text.txt', 'w') as all_text:
     for link in job_links:
         job_soup = BeautifulSoup(requests.get(link).text, 'html.parser')
-        all_text.write(job_soup.get_text())
+        all_text.write(job_soup.findAll('div', {'class':'jobsearch-jobDescriptionText'})[0].get_text())
         del job_soup
 del job_links

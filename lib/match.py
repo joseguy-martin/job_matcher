@@ -1,11 +1,8 @@
-try:
-    import spacy
-    import textract
-    from os import remove
-    from spacy.matcher import Matcher
-except (ModuleNotFoundError, ImportError):
-    with open('temp/.install', 'w') as f:
-        quit()
+import spacy
+import textract
+import requests
+from bs4 import BeautifulSoup
+from spacy.matcher import Matcher
 
 # Set of colors for command line display
 class bcolors:
@@ -28,7 +25,7 @@ with open('input/job.txt', 'r') as j:
 
 # User input for resume file
 while True:
-    resume_file = input('Please enter filename for your resume:\n')
+    resume_file = "input/" + input('Please enter filename for your resume:\n')
     resume_file_type = resume_file.split('.')[len(resume_file.split('.'))-1].lower()
     try:
         if 'pdf' in resume_file_type:
@@ -88,8 +85,6 @@ for chunk in resume_doc.noun_chunks:
 # Generate filter lists from the common files and remove
 verb_filter = [x.replace('\n', '') for x in open('temp/common_verbs.txt').readlines()]
 noun_filter = [x.replace('\n', '') for x in open('temp/common_nouns.txt').readlines()]
-remove('temp/common_nouns.txt')
-remove('temp/common_verbs.txt')
 
 del job_text, resume_doc, line_tokens, nlp
 
@@ -103,10 +98,8 @@ phrases_to_consider = [x for x in list(set(phrases_to_consider)) if 'hours' not 
 # Capture and display the words that were filtered
 in_filter_j = [x for x in list(set(job_verbs)) if x in verb_filter] + [x for x in list(set(job_chunks)) if x in noun_filter]
 in_filter_n = [x for x in list(set(resume_verbs)) if x in verb_filter] + [x for x in list(set(resume_chunks)) if x in noun_filter]
-print('caught!!')
+print('Filtered common words from job:')
 print(in_filter_j)
-print()
-print(in_filter_n)
 
 del resume_verbs, job_verbs, verb_filter
 
@@ -117,13 +110,13 @@ print(bcolors.GREEN + ' | '.join(verb_matches) + bcolors.ENDC + '\n')
 print(bcolors.BOLD + '\nNoun chunk matches' + bcolors.ENDC)
 print(bcolors.GREEN + ' | '.join(noun_matches) + bcolors.ENDC + '\n')
 
-print(bcolors.BOLD + 'Add these verbs' + bcolors.ENDC)
+print(bcolors.BOLD + '\nConsider adding these verbs' + bcolors.ENDC)
 print(bcolors.RED + ' | '.join(verbs_need_adding) + bcolors.ENDC + '\n')
 
-print(bcolors.BOLD + 'Add these noun chunks' + bcolors.ENDC)
+print(bcolors.BOLD + '\nConsider adding these noun chunks' + bcolors.ENDC)
 print(bcolors.RED + ' | '.join(nouns_need_adding) + bcolors.ENDC + '\n')
 
-print(bcolors.BOLD + 'Phrases to consider' + bcolors.ENDC)
+print(bcolors.BOLD + '\nConsider adding these phrases' + bcolors.ENDC)
 print(bcolors.BLUE + ' | '.join(phrases_to_consider) + bcolors.ENDC + '\n')
 
 del phrases_to_consider, verb_matches, need_adding

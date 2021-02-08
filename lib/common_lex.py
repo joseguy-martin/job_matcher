@@ -1,15 +1,9 @@
-try:
-    import spacy
-    from os import remove
-    from collections import Counter
-except (ModuleNotFoundError, ImportError):
-    with open('temp/.install', 'w') as f:
-        quit()
+import spacy
+from collections import Counter
 
 # Load spacy and read file.
 nlp = spacy.load('en_core_web_sm')
 doc = nlp(open('temp/all_text.txt', 'r').read())
-remove('temp/all_text.txt')
 del nlp
 
 # Get verbs, filtering for stopwords, punctuation, auxiliaries
